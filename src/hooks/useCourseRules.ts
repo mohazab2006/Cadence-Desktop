@@ -24,7 +24,7 @@ export function useCreateCourseRule(courseId: string | null) {
         ...input,
         course_id: courseId!,
       }),
-    onSuccess: (_, __, ctx) => {
+    onSuccess: () => {
       if (courseId) queryClient.invalidateQueries({ queryKey: ['course_rules', courseId] });
     },
   });

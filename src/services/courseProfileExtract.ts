@@ -31,12 +31,14 @@ function firstMatch(text: string, regex: RegExp): string | null {
   return m ? m[1].trim() : null;
 }
 
-function firstMatchAll(text: string, regex: RegExp): string[] {
+// Reserved for future multi-match extraction
+function firstMatchAllReserved(text: string, regex: RegExp): string[] {
   const out: string[] = [];
   let m;
   while ((m = regex.exec(text)) !== null) out.push(m[1].trim());
   return out;
 }
+void firstMatchAllReserved;
 
 export function extractProfileFromText(rawText: string): ExtractedProfile {
   const text = rawText.replace(/\r\n/g, '\n');

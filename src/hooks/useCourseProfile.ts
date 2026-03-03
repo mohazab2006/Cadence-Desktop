@@ -10,7 +10,7 @@ export function useCourseProfile(courseId: string | null) {
   });
 }
 
-export function useUpsertCourseProfile(courseId: string | null) {
+export function useUpsertCourseProfile(_courseId: string | null) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (input: Partial<CourseProfile> & { course_id: string }) =>

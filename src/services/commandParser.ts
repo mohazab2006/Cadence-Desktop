@@ -16,13 +16,15 @@ const ADD_PATTERNS = [
   /^\s*new\s+task\s+(.+)/i,
 ];
 
-const DUE_PATTERNS = [
+// Reserved for future due-date parsing patterns
+const DUE_PATTERNS_RESERVED = [
   /due\s+(?:next\s+)?(?:this\s+)?(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\s*(?:at\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm)?))?/i,
   /due\s+(?:at\s*)?(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)\s*(?:on\s+)?(monday|tuesday|wednesday|thursday|friday|saturday|sunday)?/i,
   /due\s+(tomorrow|today)\s*(?:at\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm)?))?/i,
   /due\s+(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?\s*(?:at\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm)?))?/,
   /(?:at\s+)?(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)\s*(?:on\s+)?(tomorrow|today|monday|tuesday|wednesday|thursday|friday|saturday|sunday)?/i,
 ];
+void DUE_PATTERNS_RESERVED;
 
 const COURSE_CODE = /(?:in\s+)?([A-Z]{2,4}\d{4})/i;
 const RECURRING = /(?:recurring|weekly|daily|every\s+(?:mon|tue|wed|thu|fri|sat|sun))/i;

@@ -5,6 +5,7 @@
 import type { TaskWithCourse, FocusTag } from '../lib/types';
 
 const HIGH_IMPACT_WEIGHT = 20;
+void HIGH_IMPACT_WEIGHT;
 const DUE_SOON_DAYS = 2;
 const OVERDUE_PENALTY = 1.5;
 const QUICK_WIN_MINUTES = 60;
@@ -33,6 +34,7 @@ export function scoreTaskForFocus(
   const effort = task.effort_estimate_minutes ?? null;
   const isSchool = task.workspace === 'school';
   const isLife = task.workspace === 'life';
+void isLife;
 
   if (dueAt) {
     const daysUntil = (dueAt.getTime() - now.getTime()) / (24 * 60 * 60 * 1000);

@@ -8,6 +8,7 @@ import { useSubtasks, useCreateSubtask, useUpdateSubtask, useDeleteSubtask } fro
 import { useTaskTypes } from '../../hooks/useTaskTypes';
 import { useCreateTaskType } from '../../hooks/useTaskTypes';
 import { useDeleteTaskGrade, useUpsertTaskGrade } from '../../hooks/useGrades';
+import AssessmentScopeSection from '../copilot/AssessmentScopeSection';
 
 interface SchoolTaskModalProps {
   task?: TaskWithCourse;
@@ -498,6 +499,14 @@ export default function SchoolTaskModal({ task, isOpen, onClose }: SchoolTaskMod
                   </button>
                 </div>
               </div>
+            )}
+
+            {isEditing && task?.course_id && (
+              <AssessmentScopeSection
+                taskId={task.id}
+                courseId={task.course_id}
+                taskTitle={task.title}
+              />
             )}
 
             <div className="flex items-center justify-between pt-4 border-t border-border">

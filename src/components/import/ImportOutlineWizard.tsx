@@ -188,6 +188,8 @@ export default function ImportOutlineWizard({ isOpen, onClose, onSuccess }: Impo
             file_path: relativePath,
             content_type: file.type || null,
             file_size: file.size,
+            asset_type: 'outline',
+            source: null,
           });
         } catch (e) {
           console.warn('Could not save course asset file:', e);

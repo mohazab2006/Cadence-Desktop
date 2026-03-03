@@ -30,7 +30,6 @@ export async function getCourseProfile(courseId: string): Promise<CourseProfile 
 
 export async function upsertCourseProfile(input: Partial<CourseProfile> & { course_id: string }): Promise<CourseProfile> {
   const now = new Date().toISOString();
-  const db = await getDatabase();
   await executeWithRetry(
     `INSERT INTO course_profiles (
       course_id, professor_name, professor_email, ta_names_emails, office_hours,

@@ -207,7 +207,16 @@ export interface UpdateSubtaskInput {
   order_index?: number;
 }
 
-// Course import (Milestone 5)
+// Course import (Milestone 5) + M8 asset types
+export const AssetType = {
+  OUTLINE: 'outline',
+  CALENDAR: 'calendar',
+  LECTURE: 'lecture',
+  TUTORIAL: 'tutorial',
+  OTHER: 'other',
+} as const;
+export type AssetType = (typeof AssetType)[keyof typeof AssetType];
+
 export interface CourseAsset {
   id: string;
   course_id: string | null;
@@ -217,6 +226,10 @@ export interface CourseAsset {
   file_size: number | null;
   created_at: string;
   deleted_at: string | null;
+  /** M8: outline | calendar | lecture | tutorial | other */
+  asset_type?: AssetType | string | null;
+  /** M8: optional source label */
+  source?: string | null;
 }
 
 /** One proposed task from outline parsing; used in Review & Edit before creating real tasks. */
@@ -278,5 +291,67 @@ export interface TaskWithFocus extends TaskWithCourse {
   focusScore?: number;
   focusTags?: FocusTag[];
   focusReason?: string;
+}
+
+// --- Milestone 8: Course Copilot ---
+export interface AssetExtractedText {
+  asset_id: string;
+  full_text: string;
+  page_info_json: string | null; // e.g. [{ "page": 1, "textLength": 500 }]
+  indexed_at: string;
+}
+
+export interface AssetChunk {
+  id: string;
+  asset_id: string;
+  chunk_index: number;
+  snippet: string;
+  page_start: number | null;
+  page_end: number | null;
+  created_at: string;
+}
+
+export interface AssetSummary {
+  asset_id: string;
+  summary_bullets: string; // JSON array of strings
+  key_concepts: string; // JSON array of strings
+  formulas_code: string | null; // JSON array or null
+  updated_at: string;
+}
+
+export interface AssessmentScopeLink {
+  id: string;
+  task_id: string;
+  asset_id: string;
+  chunk_id: string | null;
+  confidence: number; // 0–1
+  explanation: string;
+  created_at: string;
+}
+
+export interface AvailabilityBlock {
+  id: string;
+  title: string;
+  start_time: string; // "HH:mm"
+  end_time: string;
+  day_of_week: number | null; // 0–6, null = daily
+  recurrence: 'none' | 'daily' | 'weekly';
+  start_date: string | null; // ISO date for fixed blocks
+  end_date: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface StudyPlanBlock {
+  id: string;
+  course_id: string;
+  task_id: string | null; // optional link to assessment task
+  title: string;
+  start: string; // ISO datetime
+  end: string;
+  linked_asset_ids: string; // JSON array
+  block_type: 'review' | 'practice' | 'other';
+  created_at: string;
+  updated_at: string;
 }
 

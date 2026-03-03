@@ -6,6 +6,8 @@ import type { RecurrenceRule } from '../lib/types';
 import { formatRecurrenceRule } from '../lib/recurrenceFormat';
 import { rankTasksByFocus } from '../services/focusScoring';
 import { getConflictWarnings } from '../services/conflictDetection';
+import { useTodaysStudyBlocks } from '../hooks/useCopilot';
+import { Link } from 'react-router-dom';
 
 type WeatherInfo = {
   locationLabel: string;
@@ -844,6 +846,7 @@ export default function HomePage() {
   );
   const topFocus = useMemo(() => focusRanked.slice(0, 5), [focusRanked]);
   const conflictWarnings = useMemo(() => getConflictWarnings(focusPool), [focusPool]);
+  const { data: todaysStudyBlocks = [] } = useTodaysStudyBlocks();
 
   return (
     <div className="max-w-7xl">
@@ -909,8 +912,6 @@ export default function HomePage() {
               {(() => {
                 const currentHour = now.getHours();
                 const theme = weatherTheme(weather.weatherCode, currentHour);
-                const isNight = currentHour >= 18 || currentHour < 6;
-                
                 return (
                   <div className="relative overflow-hidden rounded-xl border border-border bg-muted p-4 shadow-sm">
                     {/* Weather animations (neutral tones for dark theme) */}
@@ -1031,6 +1032,17 @@ export default function HomePage() {
               {conflictWarnings.slice(0, 2).map((w, i) => (
                 <div key={i}>⚠ {w.message}</div>
               ))}
+            </div>
+          )}
+          {todaysStudyBlocks.length > 0 && (
+            <div className="mt-3 pt-2 border-t border-border text-xs">
+              <span className="text-muted-foreground">Today&apos;s study: </span>
+              <Link to="/school" className="text-primary hover:underline">
+                {todaysStudyBlocks[0].title}
+              </Link>
+              {todaysStudyBlocks.length > 1 && (
+                <span className="text-muted-foreground"> +{todaysStudyBlocks.length - 1} more</span>
+              )}
             </div>
           )}
         </Card>

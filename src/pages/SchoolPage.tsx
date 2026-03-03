@@ -10,6 +10,10 @@ import SchoolTasksTable from '../components/school/SchoolTasksTable';
 import type { CreateCourseInput, Course, TaskWithCourse } from '../lib/types';
 import TaskTypesModal from '../components/school/TaskTypesModal';
 import { useCourseAssets, useDeleteCourseAsset } from '../hooks/useCourseAssets';
+import CourseAssetsPanel from '../components/copilot/CourseAssetsPanel';
+import StudyPlanSection from '../components/copilot/StudyPlanSection';
+import AvailabilityBlocksSection from '../components/copilot/AvailabilityBlocksSection';
+import { AssetType } from '../lib/types';
 import {
   buildGradeWarnings,
   computeCurrentSoFar,
@@ -61,6 +65,7 @@ export default function SchoolPage() {
   const { data: courseProfile } = useCourseProfile(selectedCourseId);
   const upsertCourseProfile = useUpsertCourseProfile(selectedCourseId);
   const [profilePaste, setProfilePaste] = useState('');
+  const [lectureViewAssetId, setLectureViewAssetId] = useState<string | null>(null);
 
   const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm<CreateCourseInput>({
     resolver: zodResolver(courseSchema),
@@ -811,25 +816,39 @@ export default function SchoolPage() {
               Note: task completion (todo/doing/done) never affects grade calculations.
             </div>
 
-            {courseAssets.length > 0 && (
-              <div className="mt-6">
-                <div className="text-sm font-medium text-muted-foreground mb-2">Course assets (imported files)</div>
+            <div className="mt-6">
+              <CourseAssetsPanel
+                courseId={selectedCourseId}
+                courseCode={selectedCourse?.code}
+                viewAssetId={lectureViewAssetId}
+                onClearViewAssetId={() => setLectureViewAssetId(null)}
+              />
+            </div>
+            {courseAssets.some((a) => a.asset_type === AssetType.LECTURE || a.asset_type === AssetType.TUTORIAL) && (
+              <div className="mt-4">
+                <div className="text-sm font-medium text-muted-foreground mb-2">Lectures & tutorials</div>
                 <ul className="space-y-1 text-sm">
-                  {courseAssets.map((a) => (
-                    <li key={a.id} className="flex items-center justify-between gap-2 py-1">
-                      <span className="truncate text-foreground" title={a.file_name}>{a.file_name}</span>
-                      <button
-                        type="button"
-                        onClick={() => { if (confirm('Remove this asset?')) deleteCourseAsset.mutate(a.id); }}
-                        className="text-muted-foreground hover:text-red-500 shrink-0"
-                      >
-                        Remove
-                      </button>
-                    </li>
-                  ))}
+                  {courseAssets
+                    .filter((a) => a.asset_type === AssetType.LECTURE || a.asset_type === AssetType.TUTORIAL)
+                    .map((a) => (
+                      <li key={a.id}>
+                        <button
+                          type="button"
+                          onClick={() => setLectureViewAssetId(a.id)}
+                          className="text-primary hover:underline truncate block text-left w-full"
+                        >
+                          {a.file_name}
+                        </button>
+                      </li>
+                    ))}
                 </ul>
               </div>
             )}
+
+            <StudyPlanSection courseId={selectedCourseId} />
+            <div className="mt-4">
+              <AvailabilityBlocksSection />
+            </div>
           </div>
         </div>
       ) : null}

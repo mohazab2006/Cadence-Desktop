@@ -51,10 +51,8 @@ const navItems = [
 function StudynFlowLogo() {
   return (
     <div className="flex items-center gap-3">
-      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-foreground">
-        <svg className="h-5 w-5 text-background" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-        </svg>
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg">
+        <img src="/app-icon.png" alt="" className="h-9 w-9 object-cover" />
       </div>
       <div>
         <h1 className="text-lg font-semibold text-foreground tracking-tight">StudynFlow</h1>

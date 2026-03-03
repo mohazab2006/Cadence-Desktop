@@ -78,6 +78,7 @@ async function runMigrations(database: Database): Promise<void> {
     migration9_unique_recurring_instances,
     migration10_course_assets,
     migration11_course_rules_and_profiles,
+    migration12_course_copilot,
   ];
 
   for (let i = currentVersion; i < migrations.length; i++) {
@@ -351,5 +352,103 @@ async function migration11_course_rules_and_profiles(db: Database): Promise<void
       FOREIGN KEY (course_id) REFERENCES courses(id)
     )
   `);
+}
+
+async function migration12_course_copilot(db: Database): Promise<void> {
+  // course_assets: add asset_type, source (M8)
+  try {
+    await db.execute('ALTER TABLE course_assets ADD COLUMN asset_type TEXT');
+  } catch {
+    /* column may exist */
+  }
+  try {
+    await db.execute('ALTER TABLE course_assets ADD COLUMN source TEXT');
+  } catch {
+    /* column may exist */
+  }
+
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS asset_extracted_text (
+      asset_id TEXT PRIMARY KEY,
+      full_text TEXT NOT NULL,
+      page_info_json TEXT,
+      indexed_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (asset_id) REFERENCES course_assets(id)
+    )
+  `);
+
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS asset_chunks (
+      id TEXT PRIMARY KEY,
+      asset_id TEXT NOT NULL,
+      chunk_index INTEGER NOT NULL,
+      snippet TEXT NOT NULL,
+      page_start INTEGER,
+      page_end INTEGER,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (asset_id) REFERENCES course_assets(id)
+    )
+  `);
+  await db.execute('CREATE INDEX IF NOT EXISTS idx_asset_chunks_asset_id ON asset_chunks(asset_id)');
+
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS asset_summaries (
+      asset_id TEXT PRIMARY KEY,
+      summary_bullets TEXT NOT NULL,
+      key_concepts TEXT NOT NULL,
+      formulas_code TEXT,
+      updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (asset_id) REFERENCES course_assets(id)
+    )
+  `);
+
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS assessment_scope_links (
+      id TEXT PRIMARY KEY,
+      task_id TEXT NOT NULL,
+      asset_id TEXT NOT NULL,
+      chunk_id TEXT,
+      confidence REAL NOT NULL,
+      explanation TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (task_id) REFERENCES tasks(id),
+      FOREIGN KEY (asset_id) REFERENCES course_assets(id),
+      FOREIGN KEY (chunk_id) REFERENCES asset_chunks(id)
+    )
+  `);
+  await db.execute('CREATE INDEX IF NOT EXISTS idx_assessment_scope_task ON assessment_scope_links(task_id)');
+
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS availability_blocks (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      start_time TEXT NOT NULL,
+      end_time TEXT NOT NULL,
+      day_of_week INTEGER,
+      recurrence TEXT NOT NULL DEFAULT 'none',
+      start_date TEXT,
+      end_date TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )
+  `);
+
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS study_plan_blocks (
+      id TEXT PRIMARY KEY,
+      course_id TEXT NOT NULL,
+      task_id TEXT,
+      title TEXT NOT NULL,
+      start TEXT NOT NULL,
+      "end" TEXT NOT NULL,
+      linked_asset_ids TEXT NOT NULL DEFAULT '[]',
+      block_type TEXT NOT NULL DEFAULT 'review',
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (course_id) REFERENCES courses(id),
+      FOREIGN KEY (task_id) REFERENCES tasks(id)
+    )
+  `);
+  await db.execute('CREATE INDEX IF NOT EXISTS idx_study_plan_course ON study_plan_blocks(course_id)');
 }
 
