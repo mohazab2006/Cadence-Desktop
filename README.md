@@ -13,8 +13,8 @@ StudynFlow is a desktop planner built for students who need one place to manage 
 - **Command Center (`Ctrl+K`)**: Quick add, grade queries, and optional voice input.
 - **Import Outline**: Upload a PDF/image or paste text to extract tasks and course details (rule-based or AI-assisted).
 - **Views**: Today, Upcoming, School, Life, and full Calendar.
-
-Grade-related calculations follow a [rapidtables](https://www.rapidtables.com)-style approach where appropriate.
+- **Speech-to-text** and voice detection: Allows users to add tasks, queries, and commands using voice input.
+- Grade-related calculations use [rapidtables](https://www.rapidtables.com)-style format.
 
 ---
 
