@@ -33,7 +33,38 @@ To enable AI features, set `VITE_OPENAI_API_KEY` in `.env`. Do not commit `.env`
 
 ## Tech stack
 
-React 18, TypeScript, Tailwind, Tauri 2 (Rust), SQLite (local-first), TanStack Query, React Hook Form, Zod, React Router v6
+### Desktop and build
+
+- **[Tauri 2](https://tauri.app/)** — Rust-backed desktop shell and native APIs  
+- **[Vite 5](https://vitejs.dev/)** + **TypeScript** — dev server and production bundle  
+
+### UI
+
+- **[React 18](https://react.dev/)**  
+- **[Tailwind CSS](https://tailwindcss.com/)**  
+
+### Data and state
+
+- **SQLite** — local-first storage (`@tauri-apps/plugin-sql`)  
+- **[TanStack Query](https://tanstack.com/query)** — async and cached data  
+
+### Forms and validation
+
+- **[React Hook Form](https://react-hook-form.com/)** + **[Zod](https://zod.dev/)** (`@hookform/resolvers`)  
+
+### Routing
+
+- **[React Router](https://reactrouter.com/)** v6  
+
+### Import outline and files
+
+- **`@tauri-apps/plugin-fs`** — file access from the desktop shell  
+- **[PDF.js](https://mozilla.github.io/pdf.js/)** — PDF text in the browser  
+- **[Tesseract.js](https://tesseract.projectnaptha.com/)** — OCR for images  
+
+### Dates
+
+- **[date-fns](https://date-fns.org/)**  
 
 ---
 
