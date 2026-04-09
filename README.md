@@ -1,6 +1,6 @@
-# StudynFlow
+# Cadence (Desktop)
 
-StudynFlow is a desktop planner built for students who need one place to manage both school and personal life. It is built with Tauri 2, React, and TypeScript.
+Cadence is a desktop planner built for students who need one place to manage both school and personal life. It is built with Tauri 2, React, and TypeScript.
 
 ---
 
