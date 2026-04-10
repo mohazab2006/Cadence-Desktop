@@ -1,98 +1,66 @@
-# Cadence (Desktop)
+# Cadence
 
-Cadence is a desktop planner built for students who need one place to manage both school and personal life. It is built with Tauri 2, React, and TypeScript.
+**Cross-platform AI desktop planner for students — built with Tauri, Rust, and local-first SQLite.**
 
----
-
-## What it does
-
-- **Two workspaces**: Keep School and Life separate.
-- **School tools**: Courses, task types (assignments, quizzes, labs, exams), grade tracking, weighted calculations, drop-lowest rules, and final-grade planning.
-- **Life tools**: Categories and recurring tasks.
-- **Home dashboard**: Snapshot widgets, weather, focus tasks, mini calendar, recurring tasks, and quick views for today, overdue, and next 7 days.
-- **Command Center (`Ctrl+K`)**: Quick add, grade queries, and optional voice input.
-- **Import Outline**: Upload a PDF/image or paste text to extract tasks and course details (rule-based or AI-assisted).
-- **Views**: Today, Upcoming, School, Life, and full Calendar.
-- **Speech-to-text** and voice detection: Allows users to add tasks, queries, and commands using voice input.
-- Grade-related calculations use [rapidtables](https://www.rapidtables.com)-style format.
+Cadence unifies academic and personal life management in one desktop app. It tracks grades, extracts assignments from syllabi, and uses AI to surface what you should be focusing on — based on your actual performance, not just deadlines.
 
 ---
 
-## AI features
+## What makes it different
 
-- **Natural-language quick add**  
-  Example: `add comp2401 assignment weight 8%`
-- **Syllabus extraction**  
-  Use AI in Import Outline to pull assignments, dates, and weights from messy syllabi.
-- **Effort suggestion**  
-  Suggests estimated effort (minutes) in the School task modal.
+Most student planners are glorified to-do lists. Cadence tracks weighted grades, calculates what score you need on remaining assessments to hit your target, and uses that data to generate smart suggestions — surfacing academic gaps, flagging at-risk courses, and recommending where to focus your time.
 
-To enable AI features, set `VITE_OPENAI_API_KEY` in `.env`. Do not commit `.env`.
+Everything runs locally. No cloud sync, no accounts, no latency. SQLite stores all data on device via Tauri's native file system APIs.
 
 ---
 
-## Tech stack
+## Key Features
 
-### Desktop and build
+**Academic planning**
+- Grade tracking with weighted calculations and drop-lowest rules
+- Final grade planning — calculates required scores on remaining assessments
+- Course management across assignments, quizzes, labs, and exams
 
-- **[Tauri 2](https://tauri.app/)** — Rust-backed desktop shell and native APIs  
-- **[Vite 5](https://vitejs.dev/)** + **TypeScript** — dev server and production bundle  
+**AI features**
+- Syllabus extraction — upload a PDF or image, Tesseract.js OCR pulls out assignments, dates, and weights automatically
+- Smart suggestions — AI analyzes your grade trends and surfaces specific academic gaps and focus recommendations
+- Natural-language task creation — add tasks by describing them in plain English
+- Voice input — add tasks and queries hands-free
 
-### UI
+**Life management**
+- Separate School and Life workspaces
+- Recurring tasks and personal categories
+- Home dashboard with weather, focus tasks, mini calendar, and overdue views
 
-- **[React 18](https://react.dev/)**  
-- **[Tailwind CSS](https://tailwindcss.com/)**  
-
-### Data and state
-
-- **SQLite** — local-first storage (`@tauri-apps/plugin-sql`)  
-- **[TanStack Query](https://tanstack.com/query)** — async and cached data  
-
-### Forms and validation
-
-- **[React Hook Form](https://react-hook-form.com/)** + **[Zod](https://zod.dev/)** (`@hookform/resolvers`)  
-
-### Routing
-
-- **[React Router](https://reactrouter.com/)** v6  
-
-### Import outline and files
-
-- **`@tauri-apps/plugin-fs`** — file access from the desktop shell  
-- **[PDF.js](https://mozilla.github.io/pdf.js/)** — PDF text in the browser  
-- **[Tesseract.js](https://tesseract.projectnaptha.com/)** — OCR for images  
-
-### Dates
-
-- **[date-fns](https://date-fns.org/)**  
+**Command Center (`Ctrl+K`)**
+Quick add, grade queries, and voice input from anywhere in the app.
 
 ---
 
-## Run locally
+## Stack
 
-Requirements: Node.js 18+ and Rust
+| Layer | Tech |
+|---|---|
+| **Desktop shell** | Tauri 2, Rust |
+| **Frontend** | React 18, TypeScript, Tailwind CSS, Vite |
+| **Data** | SQLite (local-first via @tauri-apps/plugin-sql) |
+| **State** | TanStack Query |
+| **Forms** | React Hook Form, Zod |
+| **OCR** | Tesseract.js |
+| **AI** | LLM APIs |
+| **Dates** | date-fns |
 
-```bash
+---
+
+## Running
+
+**Requirements:** Node.js 18+, Rust
+
+Install dependencies and start in dev mode:
+
+```
 npm install
 npm run tauri:dev
 ```
 
-Build production app:
-
-```bash
-npm run tauri:build
-```
-
-If you update `app-icon.png`, regenerate icons with:
-
-```bash
-npx tauri icon app-icon.png
-```
-
-Then keep `public/app-icon.png` in sync.
-
----
-
-## Credits
-
-[rapidtables](https://www.rapidtables.com) was used as a reference for grade-related logic.
+To enable AI features, add your LLM API key to `.env` as `VITE_OPENAI_API_KEY`. Do not commit `.env`.
